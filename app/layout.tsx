@@ -6,6 +6,7 @@ import { IconDefinitions } from "@/components/layout/IconDefinitions";
 import { StructuredData } from "@/components/layout/StructuredData";
 import { LoadingIntro } from "@/components/experience/LoadingIntro";
 import { ContactDialog } from "@/components/experience/ContactDialog";
+import { BackToTop } from "@/components/experience/BackToTop";
 import { ExperienceRuntime } from "@/components/experience/ExperienceRuntime";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -53,6 +54,24 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
+        <script
+          id="rigat-refresh-top"
+          dangerouslySetInnerHTML={{ __html: `
+(function () {
+  var navigation = performance.getEntriesByType('navigation')[0];
+  if (!navigation || navigation.type !== 'reload') return;
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  function reset() { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+  reset();
+  window.addEventListener('pageshow', function (event) {
+    if (!event.persisted) reset();
+  }, { once: true });
+  // Restore normal history behavior when leaving this document.
+  window.addEventListener('pagehide', function () {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
+  }, { once: true });
+})();` }}
+        />
         <link
           rel="preload"
           href="/assets/inter-variable.ttf"
@@ -77,6 +96,7 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <ContactDialog />
+        <BackToTop />
         <ExperienceRuntime />
       </body>
     </html>
