@@ -1,4 +1,5 @@
 import { site } from "@/lib/site";
+import { DesktopHeroModels } from "./DesktopHeroModels";
 
 export function HeroBanner() {
   return (
@@ -115,14 +116,7 @@ export function HeroBanner() {
             </div>
           </div>
           <div className="banner-visual" id="heroVisual">
-            <img
-              id="heroProduct"
-              src="/assets/rigat-banner-product.png"
-              width="1254"
-              height="1254"
-              fetchPriority="high"
-              alt="Rideau métallique argenté sur mesure, avec son ombre et son reflet"
-            />
+            <DesktopHeroModels />
             <div className="hero-object-label" hidden>
               <span id="heroViewLabel">RIDEAU MÉTALLIQUE</span>
               <small id="heroViewCounter">ACIER GALVANISÉ</small>

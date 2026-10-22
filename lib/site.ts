@@ -2,7 +2,7 @@
 export const site = {
   name: "RIGAT",
   url:
-    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ||
     "https://bmn-precision-cinematic.braveshore128.chatgpt.site",
   title: "Rideaux métalliques à Marseille — RIGAT, fabricant depuis 1956",
   description:

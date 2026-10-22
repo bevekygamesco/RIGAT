@@ -2,12 +2,8 @@
 
 import { useEffect } from "react";
 import { initializeIntro } from "@/lib/animation/rigat-intro";
-import { initializeComposition } from "@/lib/animation/rigat-composition";
-import { initializeHero } from "@/lib/animation/hero";
-import { initializeSequence } from "@/lib/animation/app";
 import { initializeTheme } from "@/lib/animation/rigat-theme";
 import { initializeMobileShell } from "@/lib/animation/mobile-shell";
-import { initializeScroll } from "@/lib/animation/story-scroll";
 
 declare global {
   interface Window {
@@ -60,33 +56,48 @@ function loadSettings(): Promise<void> {
  */
 export function ExperienceRuntime() {
   useEffect(() => {
-    window.__rigatBoot ??= loadSettings().then(() => {
+    window.__rigatBoot ??= (async () => {
       if (!document.getElementById("stage")) {
         document.getElementById("brandIntro")?.remove();
         return;
       }
-      initializeComposition();
+      // Start the visible UI before a settings request or animation download.
       initializeIntro();
+      initializeTheme();
       const mobile = window.matchMedia("(max-width: 760px)");
       let desktopStarted = false;
+      let desktopBoot: Promise<void> | undefined;
       let closeMobile: (() => void) | undefined;
+      const startDesktop = () => {
+        desktopBoot ??= Promise.all([
+          loadSettings(),
+          import("@/lib/animation/rigat-composition"),
+          import("@/lib/animation/hero"),
+          import("@/lib/animation/app"),
+          import("@/lib/animation/story-scroll"),
+        ]).then(([, composition, hero, sequence, scroll]) => {
+          if (mobile.matches) { desktopBoot = undefined; return; }
+          composition.initializeComposition();
+          hero.initializeHero();
+          sequence.initializeSequence();
+          scroll.initializeScroll();
+          desktopStarted = true;
+        }).catch(() => {
+          desktopBoot = undefined;
+          document.getElementById("brandIntro")?.remove();
+        });
+      };
       const applyViewport = () => {
         closeMobile?.();
         closeMobile = undefined;
         if (mobile.matches) {
           window.dispatchEvent(new Event("rigat:mobile"));
           closeMobile = initializeMobileShell();
-        } else if (!desktopStarted) {
-          desktopStarted = true;
-          initializeHero();
-          initializeSequence();
-          initializeScroll();
-        }
+        } else if (!desktopStarted) startDesktop();
       };
       applyViewport();
-      initializeTheme();
       mobile.addEventListener("change", applyViewport);
-    });
+    })();
   }, []);
   return null;
 }

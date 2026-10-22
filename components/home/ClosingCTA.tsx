@@ -22,15 +22,18 @@ export function ClosingCTA() {
             </svg>
           </span>
         </button>
+        <picture className="closing-picture">
+        <source media="(max-width: 760px)" srcSet="/assets/mobile-models/plein.webp" />
         <img
           className="closing-product"
-          src="/assets/rigat-banner-product.png"
+          src="/assets/rigat-product-1254.webp" srcSet="/assets/rigat-product-640.webp 640w, /assets/rigat-product-960.webp 960w, /assets/rigat-product-1254.webp 1254w" sizes="(max-width: 760px) 85vw, 40vw"
           width="1254"
           height="1254"
           loading="lazy"
           decoding="async"
           alt="Rideau métallique argenté Rigat, avec son ombre et son reflet"
         />
+        </picture>
         <span className="closing-caption">RIGAT · FABRICANT DEPUIS 1956</span>
       </section>
     </>

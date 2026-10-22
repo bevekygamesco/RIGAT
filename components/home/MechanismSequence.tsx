@@ -195,12 +195,7 @@ export function MechanismSequence() {
           <button className="final-cta" data-contact="">
             DONNONS FORME À VOTRE PROJET <span>↗</span>
           </button>
-          <button className="replay-link" data-film="">
-            <svg className="icon">
-              <use href="#play" />
-            </svg>{" "}
-            Revoir le film
-          </button>
+          <a className="story-configurator" href="/configurateur-3d/">Configurateur 3D <span aria-hidden="true">↗</span></a>
           <div className="scene-spec">
             <span>06</span>
             <div>
@@ -225,12 +220,15 @@ export function MechanismSequence() {
             aria-hidden="true"
           ></div>
           <div className="canvas-wrap">
+            <picture>
+            <source media="(max-width: 760px)" srcSet="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" />
             <img
               id="poster"
               src="/assets/stills/opening.webp"
               alt="Le moteur et les bobines du rideau métallique pendant leur assemblage"
               fetchPriority="high"
             />
+            </picture>
             <canvas id="sequence" aria-hidden="true"></canvas>
             <svg
               className="mechanism-labels"

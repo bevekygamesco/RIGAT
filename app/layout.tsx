@@ -74,16 +74,21 @@ export default function RootLayout({
         />
         <link
           rel="preload"
-          href="/assets/inter-variable.ttf"
+          href="/assets/inter-latin.woff2"
           as="font"
-          type="font/ttf"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
         <link
           rel="preload"
-          href="/assets/rigat-banner-product.png"
+          href="/assets/rigat-product-1254.webp"
+          imageSrcSet="/assets/rigat-product-640.webp 640w, /assets/rigat-product-960.webp 960w, /assets/rigat-product-1254.webp 1254w"
+          imageSizes="(max-width: 1100px) 55vw, 46vw"
           as="image"
+          media="(min-width: 761px)"
+          fetchPriority="high"
         />
+        <link rel="preload" href="/assets/mobile-models/plein.webp" as="image" media="(max-width: 760px)" fetchPriority="high" />
       </head>
       <body className="min-h-screen bg-white antialiased">
         <StructuredData />

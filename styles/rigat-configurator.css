@@ -1,0 +1,22 @@
+.story-configurator { display: inline-flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 44px; padding: 12px 17px; border-radius: 12px; background: linear-gradient(120deg,#0753ff,#387fff); color: #fff; font-size: 11px; font-weight: 600; text-decoration: none; box-shadow: 0 5px 18px #0753ff1a; }
+.story-configurator:focus-visible { outline: 3px solid #0753ff; outline-offset: 4px; }
+.scene[data-scene="5"] > .story-configurator { display: flex; width: fit-content; margin: 14px 0; }
+.configurator-coming-soon { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; min-height: min(780px,85svh); padding: 70px 8%; background: linear-gradient(135deg,#fff,#f1f6ff); }
+.configurator-coming-soon h1 { font-size: clamp(34px,4.8vw,72px); line-height: 1.08; letter-spacing: -.05em; margin: 20px 0; }
+.configurator-coming-soon h1 em { font-style: normal; color: #0753ff; }
+.configurator-coming-soon p:not(.kicker) { max-width: 470px; font-size: 16px; line-height: 1.8; color: #627b9a; }
+.configurator-coming-soon > img { display: block; width: 100%; height: auto; }
+.configurator-page-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; margin-top: 25px; }
+.configurator-page-actions > a:last-child { font-size: 12px; color: #4675ad; }
+@media (max-width:760px) {
+  .m-story-final-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .m-story-final-actions .m-story-quote { margin: 0; min-height: 48px; font-size: 10px; padding: 10px; gap: 6px; }
+  .m-story-final-actions .story-configurator { min-height: 48px; padding: 10px; font-size: 10px; gap: 6px; }
+  .m-story-final-actions svg { flex-shrink: 0; width: 16px; }
+  .configurator-coming-soon { grid-template-columns: 1fr; gap: 15px; padding: 45px 22px; }
+  .configurator-coming-soon p:not(.kicker) { font-size: 14px; }
+  .configurator-coming-soon > img { max-width: 380px; margin: auto; }
+}
+
+/* Story scenes disable pointer events by default; enable the active link. */
+.scene:not([inert]) > .story-configurator { pointer-events: auto; }

@@ -1,3 +1,5 @@
+import { MobileSectionImage } from "@/components/mobile/MobileSectionImage";
+
 export function Expertise() {
   return (
     <>
@@ -24,6 +26,7 @@ export function Expertise() {
             aria-label="Voir le rideau métallique complet"
           >
             <span className="card-number">01 / CONCEPTION</span>
+            <MobileSectionImage src="/assets/mobile-models/microperfore.webp" alt="Rideau métallique à lames microperforées" square />
             <svg className="icon">
               <use href="#shield" />
             </svg>
@@ -43,6 +46,7 @@ export function Expertise() {
             aria-label="Découvrir la motorisation centrale"
           >
             <span className="card-number">02 / MOUVEMENT</span>
+            <MobileSectionImage src="/assets/stills/motor-mobile.webp" alt="Moteur central et axe du rideau métallique" />
             <svg className="icon">
               <use href="#gear" />
             </svg>
@@ -62,6 +66,7 @@ export function Expertise() {
             aria-label="Voir les finitions du coffre"
           >
             <span className="card-number">03 / FINITIONS</span>
+            <MobileSectionImage src="/assets/stills/coffre-mobile.webp" alt="Détail du coffre et des finitions du rideau métallique" />
             <svg className="icon">
               <use href="#tool" />
             </svg>

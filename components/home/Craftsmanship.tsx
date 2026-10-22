@@ -1,3 +1,4 @@
+import { MobileSectionImage } from "@/components/mobile/MobileSectionImage";
 import type { CSSProperties } from "react";
 
 export function Craftsmanship() {
@@ -24,6 +25,12 @@ export function Craftsmanship() {
             </span>
           </button>
         </div>
+        <MobileSectionImage
+          src="/assets/mobile-models/plein.webp"
+          alt="Rideau métallique à lames pleines, avec coffre et coulisses"
+          square
+          className="m-craft-product"
+        />
         <div className="lower-right">
           <div className="detail-row">
             <span>01</span>

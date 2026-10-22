@@ -1,3 +1,5 @@
+import { MobileSectionImage } from "@/components/mobile/MobileSectionImage";
+
 export function ProjectProcess() {
   return (
     <>
@@ -19,6 +21,16 @@ export function ProjectProcess() {
               </svg>
             </span>
           </button>
+        </div>
+        <div className="m-process-products" aria-label="Exemples de fermetures sur mesure">
+          <figure>
+            <MobileSectionImage src="/assets/mobile-models/tubes.webp" alt="Grille roulante à tubes" square />
+            <figcaption>Grille à tubes <span>Visibilité & protection</span></figcaption>
+          </figure>
+          <figure>
+            <MobileSectionImage src="/assets/mobile-models/grille.webp" alt="Grille roulante à mailles métalliques" square />
+            <figcaption>Grille à mailles <span>Une façade ouverte</span></figcaption>
+          </figure>
         </div>
         <div className="process-grid">
           <article>

@@ -1,0 +1,36 @@
+/* Product choices reuse the existing desktop hero bounds and transition. */
+@media (min-width: 761px) {
+  #heroVisual { container-type: size; }
+  .desktop-model-stage { position: absolute; left: 50%; top: 50%; width: min(100cqw,100cqh); aspect-ratio: 1; transform: translate(-50%,-50%); isolation: isolate; }
+  .desktop-model-stage #heroProduct { z-index: 1; }
+  .desktop-model-interior { position: absolute; inset: 0; background: linear-gradient(135deg,#14283e 0%,#34516b 65%,#68839b 100%); clip-path: polygon(20.33% 27.91%,81.18% 20.73%,81.18% 96.17%,20.33% 88.52%); }
+  .desktop-model-choices { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+  .desktop-model-choice { position: absolute; display: grid; place-items: center; width: clamp(46px,4.6vw,72px); aspect-ratio: 1; padding: 4px; border-radius: 50%; border: 1px solid #c7daf3; background: #fffffff5; box-shadow: 0 7px 24px #234f8620; pointer-events: auto; cursor: pointer; touch-action: manipulation; animation: rigat-desktop-model-float 8s ease-in-out infinite; }
+  #heroVisual .desktop-model-choice img { position: static; width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+  .desktop-model-choice[aria-pressed="true"] { border: 2px solid #0753ff; box-shadow: 0 0 0 5px #0753ff12,0 7px 24px #234f8620; background: #edf4ff; }
+  .desktop-model-choice:hover, .desktop-model-choice:focus-visible { animation-play-state: paused; }
+  .desktop-model-choice:focus-visible { outline: 3px solid #0753ff; outline-offset: 5px; }
+  .desktop-model-choice[data-loading="true"] { border-style: dashed; }
+  .desktop-model-choice > span { position: absolute; bottom: -2px; right: -2px; display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid white; border-radius: 50%; background: #e7effb; color: #345578; font-size: 9px; font-weight: 700; }
+  .desktop-model-choice[aria-pressed="true"] > span { color: white; background: #0753ff; }
+  .desktop-model-choice-0 { left: -2%; top: 10%; animation-delay: -1s; }
+  .desktop-model-choice-1 { right: -1%; top: 8%; animation-delay: -3s; }
+  .desktop-model-choice-2 { left: -4%; top: 29%; animation-delay: -5s; }
+  .desktop-model-choice-3 { right: -3%; top: 71%; animation-delay: -2s; }
+  .desktop-model-choice-4 { left: -1%; top: 76%; animation-delay: -4s; }
+  .desktop-model-caption { position: absolute; left: 10%; right: 10%; top: 100%; margin: 6px 0 0; display: grid; gap: 4px; text-align: center; color: #607b9c; font-size: 10px; line-height: 1.4; }
+  .desktop-model-caption strong { font-size: 13px; font-weight: 650; color: #193d68; }
+  .intro-reveal .desktop-model-stage #heroProduct { animation: hero-product-enter 1.4s cubic-bezier(.16,1,.3,1) both; }
+}
+@keyframes rigat-desktop-model-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@media (min-width: 761px) and (prefers-reduced-motion: reduce) {
+  .desktop-model-choice { animation: none; }
+}
+
+@media (min-width:761px) {
+  /* Transparent copy bounds must not cover the floating model controls. */
+  .banner-copy { pointer-events: none; }
+  .banner-copy a, .banner-copy button { pointer-events: auto; }
+  .banner-copy h1, .banner-copy > p { pointer-events: auto; width: fit-content; }
+  .bespoke-note, .benefit-badges { pointer-events: none; }
+}
