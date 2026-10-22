@@ -6,10 +6,7 @@ import { initializeComposition } from "@/lib/animation/rigat-composition";
 import { initializeHero } from "@/lib/animation/hero";
 import { initializeSequence } from "@/lib/animation/app";
 import { initializeTheme } from "@/lib/animation/rigat-theme";
-<<<<<<< HEAD
 import { initializeMobileShell } from "@/lib/animation/mobile-shell";
-=======
->>>>>>> 2ddf4c27261bc27b86680f2e19942b84f51dc508
 import { initializeScroll } from "@/lib/animation/story-scroll";
 
 declare global {
@@ -70,7 +67,6 @@ export function ExperienceRuntime() {
       }
       initializeComposition();
       initializeIntro();
-<<<<<<< HEAD
       const mobile = window.matchMedia("(max-width: 760px)");
       let desktopStarted = false;
       let closeMobile: (() => void) | undefined;
@@ -90,12 +86,6 @@ export function ExperienceRuntime() {
       applyViewport();
       initializeTheme();
       mobile.addEventListener("change", applyViewport);
-=======
-      initializeHero();
-      initializeSequence();
-      initializeTheme();
-      initializeScroll();
->>>>>>> 2ddf4c27261bc27b86680f2e19942b84f51dc508
     });
   }, []);
   return null;

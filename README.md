@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # RIGAT — Full latest project
 
 This package merges the Next.js App Router project and all updates supplied in this conversation. No patch ZIPs need to be applied.
@@ -124,6 +123,3 @@ Contact information is transcribed from your reference. Quote buttons prepare a 
 npm run typecheck
 npm run format
 ```
-=======
-
->>>>>>> 2ddf4c27261bc27b86680f2e19942b84f51dc508
