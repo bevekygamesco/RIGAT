@@ -1,0 +1,59 @@
+.button {
+  position: fixed;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #388aff, #0753ff 65%, #0340cc);
+  color: #fff;
+  box-shadow: 0 8px 24px rgb(7 83 255 / 24%), inset 0 1px 0 rgb(255 255 255 / 25%);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(14px) scale(.92);
+  transition: opacity 250ms ease, transform 300ms cubic-bezier(.2,.8,.2,1), box-shadow 250ms ease, visibility 250ms;
+}
+
+.button[data-visible="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.button:focus-visible {
+  outline: 3px solid #0753ff;
+  outline-offset: 5px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button[data-visible="true"]:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 30px rgb(7 83 255 / 32%);
+  }
+}
+
+.button[data-visible="true"]:active { transform: scale(.96); }
+
+@media (max-width: 760px) {
+  .button {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
+  .button[data-visible="true"]:hover,
+  .button[data-visible="true"]:active { transform: none; }
+}

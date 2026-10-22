@@ -1,0 +1,35 @@
+{
+  "edition": "RIGAT Restored HD / V13",
+  "renderer": "Cycles pre-rendered image sequence",
+  "native_fps": 30,
+  "native_frame_range": [
+    1,
+    420
+  ],
+  "web_frame_count": 281,
+  "film_duration_seconds": 22,
+  "desktop_resolution": [
+    1920,
+    1280
+  ],
+  "mobile_resolution": [
+    960,
+    640
+  ],
+  "web_samples_max": 16,
+  "web_samples_min": 4,
+  "adaptive_threshold": 0.08,
+  "sampling_seed": 1956,
+  "animated_seed": false,
+  "native_default_samples": 128,
+  "hero_reference_still_samples": 48,
+  "desktop_webp_quality": 96,
+  "mobile_webp_quality": 94,
+  "alpha": true,
+  "transparent_opening_holds": 14,
+  "native_project": "RIGAT_Restored_HD_Blender43.blend",
+  "lighting": "Original V7/V5 photographic studio",
+  "timeline": "timeline.json",
+  "composition": "Six alternating left/right chapters",
+  "browser_renderer": "Canvas 2D, single-frame exposures"
+}

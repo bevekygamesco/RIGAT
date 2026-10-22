@@ -1,0 +1,10 @@
+/* Tailwind utilities without Preflight: retain the approved design's exact reset. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "../styles/rigat-studio-final.css";
+@import "../styles/rigat-azure.css";
+@import "../styles/rigat-intro.css";
+@import "../styles/rigat-mobile.css";
+@source "../components";
+@source "./";
