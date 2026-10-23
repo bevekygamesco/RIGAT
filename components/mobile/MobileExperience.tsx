@@ -52,8 +52,8 @@ export function MobileExperience(){
     </section>
 
     <section className="m-scroll-story" id="mobile-mechanisme" ref={story} data-started="false" data-enhanced={enhanced} style={{"--mobile-story-vh":`${STORY_VH}svh`} as CSSProperties} aria-label="Du mécanisme à votre rideau métallique">
-      <div className="m-story-stage" ref={stage}>
-        <div className="m-story-heading"><span><i/>À L’INTÉRIEUR DU SAVOIR-FAIRE</span><span>{String(active+1).padStart(2,"0")} / 06</span></div>
+      <div className="m-story-stage" ref={stage} tabIndex={0} aria-label="Animation interactive. Glissez de droite à gauche pour avancer, de gauche à droite pour revenir." aria-describedby="mobileSwipeHint">
+        <div className="m-story-heading"><span><i/>À L’INTÉRIEUR DU SAVOIR-FAIRE</span><span aria-live="polite" aria-atomic="true">{String(active+1).padStart(2,"0")} / 06</span></div>
         <div className="m-story-visual">
           <div className="m-story-image">
             {!ready&&<img className="m-story-poster" src="/assets/stills/opening-mobile.webp" width="960" height="640" alt="Mécanisme du rideau métallique RIGAT" loading="lazy" decoding="async"/>}
@@ -70,9 +70,11 @@ export function MobileExperience(){
             {index===5&&<div className="m-story-final-actions"><button type="button" className="m-story-quote" data-contact="">Parlons de votre projet <Arrow/></button><a className="story-configurator" href="/configurateur-3d/">Configurateur 3D <Arrow/></a></div>}
           </article>)}
         </div>
-        <a className="m-story-skip" href="#savoir-faire">Continuer la page ↓</a>
-        <div className="m-story-navigation"><div className="m-story-dots" aria-label={`Étape ${active+1} sur 6`}>{CHAPTERS.map((item,index)=><span key={item.label} data-active={active===index}/>)}</div>
-          {active<5?<button type="button" onClick={()=>select.current(active+1)}>Étape suivante <span>↓</span></button>:<a href="#savoir-faire">Notre savoir-faire <span>↓</span></a>}
+        <div className="m-story-swipe-hint" id="mobileSwipeHint"><span aria-hidden="true">↔</span><p>Glissez à gauche pour avancer<br/><small>À droite pour revenir · Défilement vertical libre</small></p></div>
+        <div className="m-story-navigation">
+          <button type="button" disabled={active===0} onClick={()=>select.current(active-1)} aria-label="Étape précédente">← <span>Retour</span></button>
+          <div className="m-story-dots" aria-label={`Étape ${active+1} sur 6`}>{CHAPTERS.map((item,index)=><button type="button" key={item.label} data-active={active===index} aria-label={`Étape ${index+1} : ${item.label}`} aria-current={active===index?"step":undefined} onClick={()=>select.current(index)}/>)}</div>
+          <button type="button" disabled={active===5} onClick={()=>select.current(active+1)} aria-label="Étape suivante"><span>Suite</span> →</button>
         </div>
       </div>
     </section>

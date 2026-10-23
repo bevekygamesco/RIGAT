@@ -57,7 +57,7 @@ function loadSettings(): Promise<void> {
 export function ExperienceRuntime() {
   useEffect(() => {
     window.__rigatBoot ??= (async () => {
-      if (!document.getElementById("stage")) {
+      if (!document.getElementById("mobile-mechanisme")) {
         document.getElementById("brandIntro")?.remove();
         return;
       }

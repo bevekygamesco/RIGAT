@@ -1,4 +1,6 @@
 import "@/styles/rigat-configurator-page.css";
+import "@/styles/rigat-configurator-engine.css";
+import { configuratorMarkup } from "@/lib/configurator/markup";
 import type { Metadata } from "next";
 import Configurator from "@/components/configurator";
 
@@ -11,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function ConfiguratorPage() {
-  return <Configurator />;
+  return <Configurator markup={configuratorMarkup} />;
 }

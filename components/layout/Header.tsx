@@ -1,4 +1,7 @@
+"use client";
+import { usePathname } from "next/navigation";
 export function Header() {
+  const configurator = usePathname().startsWith("/configurateur-3d");
   return (
     <>
       <a className="skip" href="#savoir-faire">
@@ -15,7 +18,7 @@ export function Header() {
           />
         </a>
         <nav aria-label="Navigation principale">
-          <a href="#accueil" className="nav-active" data-home="">
+          <a href="#accueil" className={configurator ? undefined : "nav-active"} data-home="">
             Accueil
           </a>
           <a href="#mechanisme" data-mechanism="">
@@ -25,6 +28,7 @@ export function Header() {
             Le résultat
           </a>
           <a href="#savoir-faire">Notre savoir-faire</a>
+          <a href="/configurateur-3d/" className={configurator ? "nav-active" : undefined} aria-current={configurator ? "page" : undefined}>Configurateur</a>
         </nav>
         <div className="site-nav-actions">
           <button className="nav-contact" data-contact="">
@@ -65,8 +69,11 @@ export function Header() {
         <a href="#savoir-faire">
           Notre savoir-faire <span>04</span>
         </a>
+        <a href="/configurateur-3d/" aria-current={configurator ? "page" : undefined}>
+          Configurateur <span>05</span>
+        </a>
         <a href="#questions">
-          Questions fréquentes <span>05</span>
+          Questions fréquentes <span>06</span>
         </a>
       </nav>
     </>
