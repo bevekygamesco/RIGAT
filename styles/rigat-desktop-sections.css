@@ -1,0 +1,27 @@
+/* Existing product imagery, now presented in the lower desktop sections. */
+@media (min-width: 761px) {
+  .lower { grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); align-items: center; gap: 42px 7%; }
+  .m-section-image { display: block; position: relative; overflow: hidden; width: 100%; aspect-ratio: 16 / 10; border-radius: 20px; background: radial-gradient(ellipse at 50% 70%,#dceafa,#f4f8ff 70%,#fff); }
+  .m-section-image img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .lower > .m-craft-product { aspect-ratio: 1.12; max-width: 490px; justify-self: center; border: 1px solid #dfeafa; background: radial-gradient(ellipse at 50% 65%,#d5e6fb,#f9fbff 75%); }
+  .m-craft-product img { padding: 12px; }
+  .lower-right { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0 30px; padding-top: 0; }
+  .lower-right .detail-row { align-items: flex-start; gap: 14px; }
+  .lower-right .legal-note { grid-column: 1 / -1; max-width: none; margin: 16px 0 0; }
+  .expertise-card .m-section-image { flex: none; margin: 22px 0 24px; border: 1px solid #dfeafa; }
+  .expertise-card > .icon { display: none; }
+  .expertise-card:not(:first-child) .m-section-image img { object-fit: cover; }
+  .blue-card .m-section-image { border-color: #ffffff40; background: radial-gradient(ellipse at 50% 65%,#edf4ff,#b9d3ff); }
+  .m-process-products { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; margin: 0 0 44px; }
+  .m-process-products figure { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); align-items: center; min-width: 0; margin: 0; overflow: hidden; border: 1px solid #e0eaf8; border-radius: 22px; background: #fff; }
+  .m-process-products .m-section-image { aspect-ratio: 1; border-radius: 0; }
+  .m-process-products figcaption { padding: 20px 20px 20px 8px; color: #183860; font-size: clamp(15px,1.4vw,22px); font-weight: 600; line-height: 1.35; letter-spacing: -.025em; }
+  .m-process-products figcaption span { display: block; margin-top: 9px; font-size: 12px; font-weight: 400; line-height: 1.6; letter-spacing: 0; color: #7286a3; }
+}
+@media (min-width: 761px) and (max-width: 1024px) {
+  .lower-right { gap: 0 18px; }
+  .lower-right .detail-row strong { font-size: 14px; }
+  .expertise-card .m-section-image { margin-block: 18px; }
+  .m-process-products { gap: 14px; }
+  .m-process-products figcaption { padding-right: 12px; }
+}

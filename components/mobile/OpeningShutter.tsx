@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { animateModelChange } from "@/lib/animation/model-change";
 
 type Point = [number, number];
 type Model = { id: string; label: string; material: string; corners: [Point, Point, Point, Point] };
@@ -31,6 +32,7 @@ export function OpeningShutter() {
       const reduced = matchMedia("(prefers-reduced-motion: reduce)");
       const cache = new Map<number, Promise<HTMLImageElement>>();
       let image: HTMLImageElement | undefined, model = MODELS[0];
+      let change: Animation | undefined;
       let disposed = false, raf = 0, last = 0, current = 0, target = 0, requestId = 0;
       function load(index: number) {
         let promise = cache.get(index);
@@ -96,8 +98,10 @@ export function OpeningShutter() {
         const id = ++requestId; setLoading(index); setError("");
         void load(index).then(asset => {
           if (disposed || id!==requestId) return;
+          const switching = !!image && model.id !== MODELS[index].id;
           image = asset; model = MODELS[index]; setActive(index); setLoading(null);
           element.dataset.ready = "true"; resize();
+          if(switching)change=animateModelChange(element);
         }).catch(() => {
           if (!disposed && id===requestId) { setLoading(null); setError("Image indisponible. Réessayez."); }
         });
@@ -107,7 +111,7 @@ export function OpeningShutter() {
       choose.current(0); update();
       // Other models load only when selected; keep startup bandwidth for the hero.
       cleanup = () => {
-        disposed = true; cancelAnimationFrame(raf); observer.disconnect();
+        disposed = true; change?.cancel(); cancelAnimationFrame(raf); observer.disconnect();
         removeEventListener("scroll",update); removeEventListener("resize",resize); choose.current = () => {};
       };
     }

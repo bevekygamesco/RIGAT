@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { animateModelChange } from "@/lib/animation/model-change";
 
 const MODELS = [
   { id: "plein", label: "Lames pleines", src: "/assets/rigat-product-1254.webp" },
@@ -12,9 +13,9 @@ const MODELS = [
 
 export function DesktopHeroModels() {
   const [active, setActive] = useState(0), [pending, setPending] = useState<number | null>(null), [error, setError] = useState("");
-  const token = useRef(0), alive = useRef(false);
+  const token = useRef(0), alive = useRef(false), shown = useRef(0), change = useRef<Animation | undefined>(undefined);
   const cache = useRef(new Map<number, Promise<HTMLImageElement>>());
-  useEffect(() => { alive.current = true; return () => { alive.current = false; token.current++; }; }, []);
+  useEffect(() => { alive.current = true; return () => { alive.current = false; token.current++; change.current?.cancel(); }; }, []);
   function select(index: number) {
     const request = ++token.current;
     setPending(index); setError("");
@@ -43,7 +44,11 @@ export function DesktopHeroModels() {
     {(model.id === "grille" || model.id === "tubes") && <div className="desktop-model-interior" aria-hidden="true" />}
     <picture>
       <source media="(max-width: 760px)" srcSet="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" />
-      <img id="heroProduct" src={model.src} srcSet={active===0 ? "/assets/rigat-product-640.webp 640w, /assets/rigat-product-960.webp 960w, /assets/rigat-product-1254.webp 1254w" : undefined} sizes={active===0 ? "(max-width: 1100px) 55vw, 46vw" : undefined} decoding="async" data-model-source={model.src} width="1254" height="1254" fetchPriority="high" alt={`${model.label} RIGAT sur mesure, avec son ombre et son reflet`} />
+      <img onLoad={event => {
+        if(shown.current===active)return;
+        shown.current=active;
+        change.current=animateModelChange(event.currentTarget);
+      }} id="heroProduct" src={model.src} srcSet={active===0 ? "/assets/rigat-product-640.webp 640w, /assets/rigat-product-960.webp 960w, /assets/rigat-product-1254.webp 1254w" : undefined} sizes={active===0 ? "(max-width: 1100px) 55vw, 46vw" : undefined} decoding="async" data-model-source={model.src} width="1254" height="1254" fetchPriority="high" alt={`${model.label} RIGAT sur mesure, avec son ombre et son reflet`} />
     </picture>
     <div className="desktop-model-choices" role="group" aria-label="Choisir votre modèle de fermeture" aria-busy={pending !== null}>
       {MODELS.map((item, index) => <button key={item.id} type="button" className={`desktop-model-choice desktop-model-choice-${index}`} aria-label={`Afficher : ${item.label}`} title={item.label} aria-pressed={index === active} data-loading={pending === index} onClick={() => select(index)}>

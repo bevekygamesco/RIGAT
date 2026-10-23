@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rideau Métallique Configurator — Mesures, Finitions &amp; Récapitulatif</title>
+<style>
+:root{color-scheme:light;--ink:#203643;--muted:#6a7d87;--line:#dce5e9;--accent:#178baf}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(ellipse at 10% 0%,#edf6fa,transparent 60%),linear-gradient(135deg,#f1f4f5,#ece9e4);font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+main{max-width:1240px;margin:30px auto;padding:20px;display:grid;grid-template-columns:1.25fr 1fr;gap:32px;background:#ffffffd9;border:1px solid #fff;border-radius:26px;box-shadow:0 18px 65px #2947560c}
+.visual{align-self:start;position:sticky;top:24px}.stage{position:relative;width:100%;max-width:500px;margin-inline:auto;aspect-ratio:1;border-radius:19px;overflow:hidden;border:1px solid #ffffffb8;background:radial-gradient(ellipse at 22% 18%,#f7f8f5 0%,transparent 54%),radial-gradient(ellipse at 85% 20%,#d7e5ed 0%,transparent 62%),linear-gradient(155deg,#e8eef1 0%,#d7e0e4 54%,#eae3d9 100%)}
+.stage:before{content:"";position:absolute;left:25%;right:24%;bottom:12%;height:2.5%;border-radius:50%;background:#38536052;filter:blur(15px);opacity:.27;transform:skewX(15deg)}canvas{position:relative;display:block;width:100%;height:100%;z-index:1}
+.stage-label{display:flex;justify-content:space-between;align-items:center;margin:15px 4px 0;color:var(--muted);font-size:12px}.badge{border:1px solid #d9e2e7;background:#ffffffa8;border-radius:99px;padding:5px 11px;color:#36525f}.status{margin:10px 4px 0;min-height:20px;font-size:12px;color:#b35334}
+.eyebrow{font-size:10px;letter-spacing:.2em;font-weight:700;color:#69848e;margin:6px 0 10px}h1{font-size:26px;letter-spacing:-.04em;line-height:1.2;margin:0 0 10px;font-weight:650}.intro{color:var(--muted);margin:0 0 22px;font-size:13px}.controls{padding:4px 6px 6px 0}
+fieldset{border:0;margin:0 0 19px;padding:0;min-width:0}legend{display:flex;align-items:center;gap:12px;width:100%;font-weight:650;font-size:13px;padding:0;margin:0 0 9px}.selection{margin-left:auto;font-size:11px;color:var(--muted);font-weight:400}.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+button{font:inherit;cursor:pointer;color:var(--ink);transition:border-color .18s,background .18s,box-shadow .18s,transform .18s}button:hover{border-color:#80b4c3;transform:translateY(-1px)}button:focus-visible{outline:3px solid #258faf66;outline-offset:3px}button[aria-pressed=true]{border-color:var(--accent);background:#edf8fb;box-shadow:0 0 0 1px #178baf2a}
+.color{min-width:0;padding:10px 3px 8px;background:#fff;border:1px solid var(--line);border-radius:11px;font-size:10px;line-height:1.2;min-height:82px;display:flex;flex-direction:column;align-items:center;gap:3px}.swatch{width:28px;height:28px;border-radius:50%;margin-bottom:5px;border:1px solid #00000015;box-shadow:inset -2px -3px 5px #00000013}.code{font-size:9px;color:#758792}.color[aria-pressed=true] .code{color:#23738a}
+.housing-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px}.housing{display:flex;gap:12px;align-items:center;text-align:left;padding:12px 15px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:12px;font-weight:600}.housing svg{width:37px;height:31px;flex-shrink:0;stroke:#6b8793;fill:#e9f0f3;stroke-width:1.2}.help{color:var(--muted);font-size:11px;margin:7px 0 0}.divider{height:1px;background:linear-gradient(90deg,#dce5e9,transparent);margin:20px 0}.reset{padding:7px 0;color:#5f7f8d;background:none;border:0;font-size:12px;text-decoration:underline;text-underline-offset:3px}.note{font-size:10px;color:#84939b;margin:12px 0 0;max-width:410px}
+footer{grid-column:1/-1;font-size:11px;color:#85939a;border-top:1px solid #e5eaed;padding:13px 4px 0}
+@media(max-width:1040px){main{margin:18px;gap:22px;grid-template-columns:1.1fr 1fr}.options{grid-template-columns:repeat(3,1fr)}.color{flex-direction:row;gap:7px;min-height:53px;padding:8px;font-size:10px;flex-wrap:wrap}.swatch{width:23px;height:23px;margin:0}.code{margin-left:auto}h1{font-size:24px}}
+@media(max-width:740px){main{grid-template-columns:1fr;margin:12px;padding:14px;gap:15px;border-radius:20px}.visual{position:relative;top:0}.stage{max-width:560px;margin:auto}.controls{padding:4px}.options{grid-template-columns:repeat(3,1fr)}.color{flex-direction:column;gap:3px;min-height:78px;padding:8px 2px;font-size:9px;flex-wrap:nowrap}.code{margin-left:0}.swatch{width:26px;height:26px;margin-bottom:4px}.intro{margin-bottom:18px}footer{padding-top:12px}}
+@media(prefers-reduced-motion:reduce){button{transition:none}button:hover{transform:none}}
+
+/* Warm off-white and charcoal backgrounds matched to the supplied references. */
+:root{--page:linear-gradient(155deg,#fffdf8,#fffdfa);--panel:#fffdfa;--button:#ffffff;--active:#edf8fb;--shadow:#38536052;--stage-bg:linear-gradient(155deg,#fffdf8,#fffdfa)}
+:root[data-theme="dark"]{color-scheme:dark;--ink:#f0f0ed;--muted:#aaa9a5;--line:#484847;--accent:#86c6db;--page:linear-gradient(155deg,#2c2c2c,#242424);--panel:#2a2a29;--button:#323231;--active:#344950;--shadow:#000000;--stage-bg:linear-gradient(155deg,#2c2c2c,#242424)}
+body{background:var(--page)}main{background:var(--panel);border-color:var(--line)}
+.stage{max-width:500px;background:var(--stage-bg);border-color:var(--line);touch-action:pan-y}
+.stage:before{background:var(--shadow)}.color,.housing,.theme-button{background:var(--button);border-color:var(--line)}
+button[aria-pressed=true]{background:var(--active)}.badge{background:var(--button);border-color:var(--line);color:var(--ink)}
+.eyebrow,.code,.help,.note,footer,.selection,.reset{color:var(--muted)}footer{border-color:var(--line)}
+:root[data-theme="dark"] .color[aria-pressed=true] .code{color:#9ed8e8}
+.viewer-tools{max-width:500px;margin:0 auto 12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.theme-toggle{display:flex;gap:5px}.theme-button{border:1px solid var(--line);border-radius:9px;padding:6px 12px;font-size:11px}
+.viewer-caption{font-size:11px;color:var(--muted)}
+.detail-row{max-width:500px;margin:16px auto 0;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.detail-copy{max-width:180px}.detail-copy strong{display:block;font-size:13px;font-weight:600;margin-bottom:5px}.detail-copy p{color:var(--muted);font-size:11px;margin:0;line-height:1.7}
+.zoom-panel{width:220px;height:220px;flex-shrink:0;position:relative;overflow:hidden;background:var(--stage-bg);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px #00000008}
+.zoom-panel canvas{opacity:0;transition:opacity .2s}.zoom-panel.active canvas{opacity:1}.zoom-placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:var(--muted);font-size:11px;transition:opacity .2s;pointer-events:none}.zoom-panel.active .zoom-placeholder{opacity:0}
+.zoom-tag{position:absolute;bottom:9px;right:10px;font-size:10px;padding:3px 6px;background:var(--panel);color:var(--muted);border-radius:5px;z-index:2;pointer-events:none}
+.detail-lens{position:absolute;left:0;top:0;border:1px solid #8aaab6;box-shadow:0 0 0 1px #ffffff30;pointer-events:none;opacity:0;z-index:3;transition:opacity .18s;border-radius:5px}
+.stage.is-inspecting .detail-lens{opacity:.7}
+@media(max-width:420px){.zoom-panel{width:180px;height:180px}.detail-row{gap:12px}.detail-copy{max-width:120px}}
+@media(prefers-reduced-motion:reduce){.zoom-panel canvas,.zoom-placeholder,.detail-lens{transition:none}}
+
+.tablier-options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.tablier-size{border:1px solid var(--line);background:var(--button);border-radius:10px;padding:12px 4px;font-weight:600;font-size:12px}
+
+[hidden]{display:none!important}
+.step-nav{max-width:1240px;margin:26px auto -12px;padding:0 24px;display:flex;align-items:center;gap:14px;color:var(--muted)}
+.step-link{border:0;background:transparent;display:flex;align-items:center;gap:9px;padding:8px 0;font-size:12px;color:var(--muted)}.step-link span{display:grid;place-items:center;width:25px;height:25px;border:1px solid var(--line);border-radius:50%;font-size:11px}.step-link[aria-current=step]{color:var(--ink);font-weight:650}.step-link[aria-current=step] span{background:var(--ink);color:var(--panel);border-color:var(--ink)}.step-line{width:42px;height:1px;background:var(--line)}button:disabled{cursor:default;opacity:.45;transform:none}
+.measure-panel{padding:16px 10px 8px 0;align-self:center}.measure-panel h1{font-size:34px;max-width:340px}.measure-panel .intro{max-width:340px;line-height:1.8}
+.measure-field{display:block;margin:22px 0}.measure-field>span{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:650;margin-bottom:9px}.measure-field small{font-size:11px;font-weight:400;color:var(--muted)}.measure-input{display:flex;align-items:center;border:1px solid var(--line);border-radius:13px;background:var(--button);padding-right:15px;transition:border-color .2s,box-shadow .2s}.measure-input:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px #178baf13}.measure-input input{width:100%;min-width:0;padding:17px 16px;border:0;outline:0;background:none;color:var(--ink);font:550 21px system-ui;appearance:textfield}.measure-input input::-webkit-inner-spin-button{appearance:none}.measure-input>span{font-size:12px;color:var(--muted)}
+.measure-next{display:flex;align-items:center;justify-content:space-between;gap:20px;width:100%;padding:16px 19px;margin-top:26px;background:var(--ink);color:var(--panel);border:1px solid var(--ink);border-radius:13px;font-size:13px;font-weight:600}.measure-next:not(:disabled):hover{box-shadow:0 6px 20px #00000015;border-color:var(--ink)}.measure-next svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.6}.measure-help{font-size:11px;color:var(--muted);line-height:1.7;margin-top:14px}.measure-stage{isolation:isolate}.measure-stage canvas{pointer-events:none}.motion-toolbar{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;gap:10px;padding:14px 10px;border:1px solid #ffffff16;border-radius:24px;background:linear-gradient(150deg,#3d3d3dec,#303030ed);box-shadow:0 14px 30px #00000020}.motion-button{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#4e4e4e,#373737);border:1px solid #ffffff20;color:#fff;box-shadow:0 4px 8px #00000035,inset 0 1px 0 #ffffff12;padding:0}.motion-button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.motion-button[aria-pressed=true]{background:#464646;border-color:#ffffff70}.motion-button:not(:disabled):hover{border-color:#ffffff90;transform:translateY(-1px)}.motion-state{font-variant-numeric:tabular-nums}.measure-guides{pointer-events:none;position:absolute;inset:0;z-index:4;opacity:0;transition:opacity .2s}.measure-stage.show-guides .measure-guides{opacity:1}.dimension-width{position:absolute;left:28%;width:44%;bottom:8%;border-top:1px solid #8da2ae}.dimension-width:before,.dimension-width:after{content:'';position:absolute;height:9px;top:-5px;border-left:1px solid #8da2ae}.dimension-width:after{right:0}.dimension-width span{display:block;width:max-content;margin:6px auto 0;font-size:10px;color:var(--muted);background:var(--panel);padding:2px 6px;border-radius:4px}.dimension-height{position:absolute;right:7%;top:20%;height:63%;border-right:1px solid #8da2ae}.dimension-height:before,.dimension-height:after{content:'';position:absolute;width:9px;right:-5px;border-top:1px solid #8da2ae}.dimension-height:after{bottom:0}.dimension-height span{position:absolute;top:50%;right:-1px;transform:translate(50%,-50%) rotate(-90deg);white-space:nowrap;font-size:10px;color:var(--muted);background:var(--panel);padding:2px 6px;border-radius:4px}.measure-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;padding:11px 13px;border:1px solid var(--line);border-radius:11px;font-size:11px;color:var(--muted)}.measure-summary strong{display:block;color:var(--ink);font-size:13px;font-weight:600;margin-top:2px}.back-measure{font-size:11px;padding:4px;background:none;border:0;text-decoration:underline;text-underline-offset:3px;color:var(--muted)}.flow-step{transition:opacity .32s,transform .32s}.flow-step.leaving{opacity:0;transform:translateY(-7px)}.flow-step.entering{opacity:0;transform:translateY(12px)}.flow-step.entering .stage{transform:scale(.975)}.flow-step .stage{transition:transform .45s}
+@media(max-width:740px){.step-nav{margin-top:12px;padding:0 18px}.measure-panel{padding:4px}.measure-panel h1{font-size:28px;max-width:none}.measure-field{margin:16px 0}.measure-input input{padding:14px 15px;font-size:20px}.motion-toolbar{left:8px;padding:10px 7px;gap:7px;border-radius:21px}.motion-button{width:34px;height:34px}.motion-button svg{width:18px;height:18px}.measure-summary{margin-bottom:14px}.dimension-height{right:5%}.viewer-tools{gap:5px}.viewer-caption{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.flow-step,.flow-step .stage,.measure-guides{transition:none}}
+
+.motion-toolbar{user-select:none;-webkit-user-select:none}.motion-button{touch-action:none}
+
+.recap-step{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:44px;padding:32px;align-items:center}
+.recap-preview{width:100%;max-width:560px;margin:auto}.recap-preview .viewer-tools{max-width:560px}.recap-preview .viewer-caption{font-size:10px;letter-spacing:.12em;font-weight:650;text-transform:uppercase}.recap-stage{max-width:560px;overflow:hidden;border:0;background:radial-gradient(ellipse at 50% 50%,var(--active),transparent 70%)}.recap-stage:before{display:none}.recap-stage canvas{pointer-events:none;transform:none}.recap-shadow{position:absolute;left:28%;right:28%;bottom:12%;height:3%;background:var(--shadow);opacity:.16;border-radius:50%;filter:blur(14px);pointer-events:none}.recap-hint{text-align:center;font-size:11px;color:var(--muted);margin:14px 0 0}
+.recap-summary{min-width:0;width:100%;padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--button);box-shadow:0 14px 44px #00000005}.recap-heading .eyebrow{margin-top:0}.recap-heading h1{font-size:30px;line-height:1.2;margin-bottom:10px}.recap-heading .intro{line-height:1.7;margin-bottom:24px;max-width:360px}.recap-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}.recap-item{min-width:0}.recap-item dt{font-size:10px;color:var(--muted);margin-bottom:6px}.recap-item dd{margin:0;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}.recap-item:nth-child(-n+3){border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--panel)}.recap-item:nth-child(-n+2) dd{font-size:19px;letter-spacing:-.03em}.recap-item:nth-child(n+4){grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line)}.recap-item:nth-child(4){margin-top:12px}.recap-item:nth-child(n+4) dt{margin:0;font-size:12px}.recap-item:nth-child(n+4) dd{text-align:right;font-size:12px}.recap-item:nth-child(3){grid-column:1/-1}.recap-dot{width:20px;height:20px;border-radius:50%;border:1px solid #80808055;flex-shrink:0;box-shadow:inset 0 0 0 2px #ffffff28}.recap-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px}.recap-actions .housing{font-size:12px;padding:12px 15px;justify-content:center;background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.recap-float{position:absolute;inset:0;animation:recap-float 7s ease-in-out infinite;animation-play-state:paused;pointer-events:none;will-change:transform}#recapStep:not([hidden]) .recap-float{animation-play-state:running}html.motion-paused .recap-float{animation-play-state:paused}@keyframes recap-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@media(max-width:1040px){.recap-step{gap:24px;padding:22px}.recap-summary{padding:22px}.recap-heading h1{font-size:26px}.recap-actions{flex-wrap:wrap}}
+@media(max-width:740px){.step-nav{gap:9px}.step-line{width:20px}.step-link{font-size:11px;gap:6px}.recap-step{grid-template-columns:1fr;padding:16px;gap:24px}.recap-summary{padding:20px}.recap-heading h1{font-size:27px}.recap-hint{margin-top:4px}.recap-item:nth-child(n+4) dd{font-size:11px}.recap-actions{flex-wrap:nowrap;gap:8px}.recap-actions .housing{padding:12px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.recap-float{animation:none;will-change:auto}}
+</style>
+<meta name="robots" content="noindex,follow"><link rel="stylesheet" href="rigat-brand.css">
+</head>
+<body>
+<nav class="step-nav" aria-label="Étapes de configuration"><button id="stepModels" class="step-link" type="button" aria-current="step"><span>01</span>Modèle</button><i class="step-line" aria-hidden="true"></i><button id="stepMeasures" class="step-link" type="button"><span>02</span>Mesures</button><i class="step-line" aria-hidden="true"></i><button id="stepFinishes" class="step-link" type="button" disabled><span>03</span>Finitions</button><i class="step-line" aria-hidden="true"></i><button id="stepRecap" class="step-link" type="button" disabled><span>04</span>Récap</button></nav>
+<main id="modelStep" class="flow-step model-step"><section class="model-visual"><p class="viewer-caption">LA COLLECTION RIGAT</p><div class="model-image-stage"><img id="modelPreview" src="/assets/mobile-models/plein.webp" width="960" height="960" alt="Rideau métallique RIGAT à lames pleines"/></div><div class="model-preview-caption"><strong id="modelPreviewName">Rideau métallique</strong><span id="modelAvailability">Configurateur disponible</span></div></section><section class="model-panel"><p class="eyebrow">VOTRE FERMETURE · ÉTAPE 01</p><h1>Tout commence par un modèle.</h1><p class="intro">Choisissez votre fermeture. Le configurateur du rideau métallique est disponible dès maintenant.</p><div class="model-choices" aria-label="Choisir un modèle"><button class="model-choice" type="button" data-model="plein" aria-pressed="true"><img src="/assets/mobile-models/plein-thumb.webp" width="120" height="120" alt=""/><span><strong>Rideau métallique</strong><small>Lames pleines · Configurateur disponible</small></span><i aria-hidden="true">✓</i></button><button class="model-choice" type="button" data-model="microperfore" aria-pressed="false"><img src="/assets/mobile-models/microperfore-thumb.webp" width="120" height="120" alt=""/><span><strong>Rideau microperforé</strong><small>Bientôt disponible</small></span><i aria-hidden="true"></i></button><button class="model-choice" type="button" data-model="tubes" aria-pressed="false"><img src="/assets/mobile-models/tubes-thumb.webp" width="120" height="120" alt=""/><span><strong>Grille à tubes</strong><small>Bientôt disponible</small></span><i aria-hidden="true"></i></button><button class="model-choice" type="button" data-model="grille" aria-pressed="false"><img src="/assets/mobile-models/grille-thumb.webp" width="120" height="120" alt=""/><span><strong>Grille à mailles</strong><small>Bientôt disponible</small></span><i aria-hidden="true"></i></button><button class="model-choice" type="button" data-model="sectionnelle" aria-pressed="false"><img src="/assets/mobile-models/sectionnelle-thumb.webp" width="120" height="120" alt=""/><span><strong>Porte industrielle</strong><small>Bientôt disponible</small></span><i aria-hidden="true"></i></button></div><p id="modelSoon" class="model-soon" role="status" hidden>Le configurateur de ce modèle sera bientôt disponible.</p><button type="button" id="modelContinue" class="measure-next"><span>Continuer · Mesures</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button></section></main>
+<main id="measureStep" class="flow-step" hidden>
+<section class="visual">
+<div class="viewer-tools"><span class="viewer-caption">Vue 360° · glissez pour tourner</span><div class="theme-toggle" aria-label="Ambiance de l’aperçu"><button type="button" class="theme-button" data-theme-choice="light" aria-pressed="true">Clair</button><button type="button" class="theme-button" data-theme-choice="dark" aria-pressed="false">Sombre</button></div></div>
+<div class="stage measure-stage" id="measureStage" aria-busy="true" tabindex="0" aria-label="Aperçu du rideau. Glissez ou utilisez les flèches gauche et droite pour tourner.">
+<canvas id="measureCanvas" width="1000" height="1000" role="img" aria-label="Closed shutter, angle 0"></canvas>
+<div class="motion-toolbar" role="group" aria-label="Commandes du rideau">
+<button type="button" class="motion-button" id="motionOpen" aria-label="Ouvrir le rideau" title="Ouvrir le rideau" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 17V4m-4 4 4-4 4 4M4 21h16"/></svg></button>
+<button type="button" class="motion-button" id="motionClose" aria-label="Fermer le rideau" title="Fermer le rideau" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M12 4v13m-4-4 4 4 4-4M4 21h16"/></svg></button>
+<button type="button" class="motion-button" id="motionLeft" aria-label="Tourner à gauche" title="Maintenir pour tourner à gauche"><svg viewBox="0 0 24 24"><rect x="5" y="9" width="12" height="10" rx="3"/><path d="M10 6H7l3-3M7 6c8-3 13 0 13 7"/></svg></button>
+<button type="button" class="motion-button" id="motionRight" aria-label="Tourner à droite" title="Maintenir pour tourner à droite"><svg viewBox="0 0 24 24"><rect x="7" y="9" width="12" height="10" rx="3"/><path d="M14 6h3l-3-3M17 6C9 3 4 6 4 13"/></svg></button>
+</div>
+<div class="measure-guides" aria-hidden="true"><div class="dimension-width"><span id="widthGuide">Largeur</span></div><div class="dimension-height"><span id="heightGuide">Hauteur</span></div></div>
+</div>
+<div class="stage-label"><span id="motionPose">Fermé</span></div>
+<p class="status" id="measureStatus" role="status" aria-live="polite">Chargement de l’aperçu…</p>
+</section>
+<form id="measurementForm" class="measure-panel" novalidate>
+<p class="eyebrow">RIDEAU MÉTALLIQUE · ÉTAPE 02</p><h1>Les bonnes proportions.</h1><p class="intro">Renseignez votre ouverture, puis choisissez vos finitions. Explorez votre rideau avec les commandes ou en faisant glisser l’image.</p>
+<label class="measure-field" for="measureWidth"><span>Largeur <small>de l’ouverture</small></span><div class="measure-input"><input id="measureWidth" name="largeur" type="number" inputmode="numeric" min="1" step="1" required placeholder="1200" autocomplete="off"><span>mm</span></div></label>
+<label class="measure-field" for="measureHeight"><span>Hauteur <small>de l’ouverture</small></span><div class="measure-input"><input id="measureHeight" name="hauteur" type="number" inputmode="numeric" min="1" step="1" required placeholder="2200" autocomplete="off"><span>mm</span></div></label>
+<button type="submit" id="measureNext" class="measure-next" disabled><span>Choisir mes finitions</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+<p class="measure-help">Dimensions en millimètres. Avant l’ouverture ou la fermeture, le rideau revient automatiquement à sa vue de départ.</p>
+</form>
+<footer>02 · Mesures &amp; inspection</footer>
+</main>
+<main id="finishStep" class="flow-step" hidden>
+<section class="visual">
+<div class="viewer-tools"><span class="viewer-caption">VOTRE RIDEAU · LES FINITIONS</span><div class="theme-toggle" aria-label="Ambiance de l’aperçu"><button type="button" class="theme-button" data-theme-choice="light" aria-pressed="true">Clair</button><button type="button" class="theme-button" data-theme-choice="dark" aria-pressed="false">Sombre</button></div></div>
+<div class="stage" id="stage" aria-busy="true"><canvas id="model" width="1000" height="1000" role="img" aria-label="Shutter preview"></canvas><div class="detail-lens" id="detailLens" aria-hidden="true"></div></div>
+<div class="stage-label"><span class="badge" id="housingBadge">Coffre facetté</span></div>
+<p class="status" id="status" role="status" aria-live="polite"></p>
+<div class="detail-row"><div class="detail-copy"><strong>Le sens du détail.</strong><p>Survolez l’image pour examiner les détails. Sur mobile, touchez ou glissez sur le rideau.</p></div><div class="zoom-panel" id="zoomPanel"><canvas id="detailCanvas" role="img" aria-label="Détail agrandi du rideau"></canvas><span class="zoom-placeholder" id="zoomHint">Survolez le rideau<br>pour voir les détails</span><span class="zoom-tag">1.5×</span></div></div>
+</section>
+<section class="controls">
+<div class="measure-summary"><div>Vos dimensions<strong id="measurementSummary">—</strong></div><button type="button" id="backMeasurements" class="back-measure">Modifier les mesures</button></div>
+<p class="eyebrow">RIDEAU MÉTALLIQUE</p><h1>Votre signature.</h1>
+<p class="intro">Choisissez le profil du coffre et la finition de chaque élément.</p>
+<fieldset><legend>Coffre <span class="selection">Choisir le profil</span></legend>
+<div class="housing-row">
+<button type="button" class="housing" data-style="facette" aria-pressed="true"><svg viewBox="0 0 42 34" aria-hidden="true"><path d="M5 5h32v24H13L5 21z"/></svg>Facetté</button>
+<button type="button" class="housing" data-style="arrondi" aria-pressed="false"><svg viewBox="0 0 42 34" aria-hidden="true"><path d="M5 5h32v24H17C9 29 5 23 5 17z"/></svg>Arrondi</button>
+</div><p class="help">Votre couleur est conservée lorsque vous changez le profil du coffre.</p></fieldset>
+
+<div class="divider"></div><div id="controls"></div>
+<button class="reset" type="button" id="reset">Réinitialiser les finitions en acier</button>
+<button type="button" id="finishNext" class="measure-next"><span>Voir mon récapitulatif</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+
+</section>
+</main>
+<main id="recapStep" class="flow-step recap-step" hidden>
+
+<section class="recap-preview" aria-label="Votre rideau personnalisé">
+<div class="viewer-tools"><span class="viewer-caption">VOTRE RIDEAU PERSONNALISÉ</span><div class="theme-toggle" aria-label="Ambiance de l’aperçu"><button type="button" class="theme-button" data-theme-choice="light" aria-pressed="true">Clair</button><button type="button" class="theme-button" data-theme-choice="dark" aria-pressed="false">Sombre</button></div></div>
+<div id="recapStage" class="stage recap-stage"><div class="recap-shadow" aria-hidden="true"></div><div class="recap-float"><canvas id="recapCanvas" width="1000" height="1000" role="img" aria-label="VOTRE RIDEAU PERSONNALISÉ"></canvas></div></div>
+<p class="recap-hint">Vos choix, jusque dans les détails.</p>
+</section>
+<section class="recap-summary" aria-label="Récapitulatif de la configuration"><header class="recap-heading"><p class="eyebrow">RIDEAU MÉTALLIQUE · ÉTAPE 04</p><h1>Votre projet prend forme.</h1><p class="intro">Vos dimensions, vos finitions. Retrouvez tous vos choix et préparez votre projet avec RIGAT.</p></header><dl id="recapDetails" class="recap-details"></dl><div class="recap-actions"><button id="recapBack" type="button" class="housing">← Modifier les finitions</button><button id="recapMeasurements" type="button" class="back-measure">Modifier les mesures</button></div></section>
+<footer>04 · Récapitulatif</footer>
+</main>
+<noscript>Activez JavaScript pour utiliser le configurateur.</noscript>
+<script src="view-centering.js"></script>
+<script>
+'use strict';
+const colors=[['acier-reference','Acier','Métallique','#676767'],['blanc-9010','Blanc','RAL 9010','#F0ECE1'],['noir-9005','Noir','RAL 9005','#0A0A0A']];
+const groups=[['Tablier-index0','Tablier'],['LameFinale-index1','Lame finale'],['Coulisse-index2','Coulisses'],['Coffre-index3','Couleur du coffre']];
+const selected=Object.fromEntries(groups.map(([id])=>[id,'acier-reference']));
+const tablierSizes=[['8-44','Standard']];
+let tablierSize='8-44';
+let housing='facette',ticket=0;
+const cache=new Map(),canvas=document.getElementById('model'),context=canvas.getContext('2d'),stage=document.getElementById('stage'),status=document.getElementById('status');
+const composite=document.createElement('canvas');composite.width=1000;composite.height=1000;
+const compositeContext=composite.getContext('2d');
+const labels=new Map(),rows=new Map();
+function finishOffset(){return window.shutterViewOffsets?.finish?.[tablierSize+'/'+housing]||[0,0]}
+function present(){
+ const size=Math.max(1,Math.round(stage.getBoundingClientRect().width*Math.min(window.devicePixelRatio||1,2)));
+ if(canvas.width!==size||canvas.height!==size){canvas.width=size;canvas.height=size}
+ context.clearRect(0,0,size,size);context.imageSmoothingEnabled=true;context.imageSmoothingQuality='high';
+ const offset=finishOffset();context.drawImage(composite,offset[0]/1000*size,offset[1]/1000*size,size,size);
+}
+new ResizeObserver(present).observe(stage);
+window.addEventListener('resize',present);
+
+const zoomPanel=document.getElementById('zoomPanel'),zoomCanvas=document.getElementById('detailCanvas'),zoomContext=zoomCanvas.getContext('2d'),zoomHint=document.getElementById('zoomHint'),lens=document.getElementById('detailLens');
+const detailComposite=document.createElement('canvas');detailComposite.width=1600;detailComposite.height=1600;const detailContext=detailComposite.getContext('2d',{willReadFrequently:true});
+const detailCache=new Map();let detailKey='',detailTicket=0,detailReady=false,detailAlpha=null,hovering=false,animation=0,lastTime=0;
+const target={x:.5,y:.5},cursor={x:.5,y:.5};
+const reduced=window.matchMedia('(prefers-reduced-motion:reduce)');
+function choiceKey(){return tablierSize+'|'+housing+'|'+groups.map(([g])=>selected[g]).join('|')}
+function stopDetail(){hovering=false;zoomPanel.classList.remove('active');stage.classList.remove('is-inspecting');if(animation)cancelAnimationFrame(animation);animation=0;lastTime=0}
+function invalidateDetail(){detailTicket++;detailReady=false;detailAlpha=null;detailKey='';stopDetail();zoomHint.innerHTML='Survolez le rideau<br>pour voir les détails'}
+function loadDetail(path){
+ if(detailCache.has(path)){const existing=detailCache.get(path);detailCache.delete(path);detailCache.set(path,existing);return existing}
+ const promise=new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>{detailCache.delete(path);reject(new Error('Detail image unavailable'))};image.src=path});detailCache.set(path,promise);return promise;
+}
+async function ensureDetail(){
+ const key=choiceKey();if(detailKey===key)return;
+ detailKey=key;detailReady=false;const generation=++detailTicket,style=housing,selection={...selected};zoomHint.textContent='Chargement du détail…';
+ try{
+  const images=await Promise.all(groups.map(([g])=>loadDetail(`images/zoom_layers/${tablierSize}/${style}/${g}/${selection[g]}.png`)));
+  if(generation!==detailTicket||key!==choiceKey())return;
+  detailContext.clearRect(0,0,1600,1600);detailContext.globalCompositeOperation='lighter';for(const image of images)detailContext.drawImage(image,0,0);detailContext.globalCompositeOperation='source-over';
+  try{detailAlpha=detailContext.getImageData(0,0,1600,1600).data}catch(error){detailAlpha=null}detailReady=true;
+  while(detailCache.size>8)detailCache.delete(detailCache.keys().next().value);
+  zoomHint.innerHTML='Survolez le rideau<br>pour voir les détails';if(hovering)startDetail();
+ }catch(error){if(generation!==detailTicket)return;detailKey='';detailReady=false;zoomHint.textContent='Detail images unavailable. Extract the complete ZIP.';stopDetail()}
+}
+function overModel(x,y){if(!detailAlpha)return x>.20&&x<.76&&y>.10&&y<.90;const px=Math.min(1599,Math.max(0,Math.floor(x*1600))),py=Math.min(1599,Math.max(0,Math.floor(y*1600)));return detailAlpha[(py*1600+px)*4+3]>20}
+function drawDetail(){
+ const bounds=stage.getBoundingClientRect(),panel=zoomPanel.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2),pixels=Math.round(panel.width*dpr);
+ if(zoomCanvas.width!==pixels||zoomCanvas.height!==pixels){zoomCanvas.width=pixels;zoomCanvas.height=pixels}
+ const crop=Math.min(1600,panel.width/bounds.width/1.5*1600);
+ const sx=Math.max(0,Math.min(1600-crop,cursor.x*1600-crop/2)),sy=Math.max(0,Math.min(1600-crop,cursor.y*1600-crop/2));
+ zoomContext.clearRect(0,0,pixels,pixels);zoomContext.imageSmoothingEnabled=true;zoomContext.imageSmoothingQuality='high';zoomContext.drawImage(detailComposite,sx,sy,crop,crop,0,0,pixels,pixels);
+ const lensSize=crop/1600*bounds.width;lens.style.width=lensSize+'px';lens.style.height=lensSize+'px';lens.style.transform=`translate(${(sx/1600+finishOffset()[0]/1000)*bounds.width}px,${(sy/1600+finishOffset()[1]/1000)*bounds.height}px)`;
+}
+function tickDetail(time){
+ animation=0;if(!hovering||!detailReady)return;
+ if(!overModel(target.x,target.y)){zoomPanel.classList.remove('active');stage.classList.remove('is-inspecting');lastTime=0;return}
+ const dt=lastTime?Math.min(64,time-lastTime):16;lastTime=time;const ease=reduced.matches?1:1-Math.exp(-dt/38);
+ cursor.x+=(target.x-cursor.x)*ease;cursor.y+=(target.y-cursor.y)*ease;drawDetail();zoomPanel.classList.add('active');stage.classList.add('is-inspecting');
+ if(Math.abs(target.x-cursor.x)+Math.abs(target.y-cursor.y)>.0001)animation=requestAnimationFrame(tickDetail);else lastTime=0;
+}
+function startDetail(){if(!detailReady||!hovering||animation)return;animation=requestAnimationFrame(tickDetail)}
+function trackDetail(event){
+ if(event.pointerType==='touch'&&event.type==='pointermove'&&event.buttons===0)return;
+ const b=stage.getBoundingClientRect();target.x=Math.max(0,Math.min(1,(event.clientX-b.left)/b.width-finishOffset()[0]/1000));target.y=Math.max(0,Math.min(1,(event.clientY-b.top)/b.height-finishOffset()[1]/1000));
+ if(!hovering){cursor.x=target.x;cursor.y=target.y}hovering=true;ensureDetail();startDetail();
+}
+stage.addEventListener('pointerenter',event=>{if(event.pointerType!=='touch')trackDetail(event)});stage.addEventListener('pointermove',trackDetail);stage.addEventListener('pointerdown',trackDetail);stage.addEventListener('pointerleave',stopDetail);stage.addEventListener('pointercancel',stopDetail);
+new ResizeObserver(()=>{if(detailReady&&hovering)drawDetail()}).observe(zoomPanel);
+function setTheme(theme){
+ document.documentElement.dataset.theme=theme;
+ for(const button of document.querySelectorAll('[data-theme-choice]'))button.setAttribute('aria-pressed',String(button.dataset.themeChoice===theme));
+ try{localStorage.setItem('shutter-preview-theme',theme)}catch(error){}
+}
+for(const button of document.querySelectorAll('[data-theme-choice]'))button.onclick=()=>setTheme(button.dataset.themeChoice);
+let initialTheme='light';try{initialTheme=localStorage.getItem('shutter-preview-theme')==='dark'?'dark':'light'}catch(error){}setTheme(initialTheme);
+
+function imagePath(group,color,style=housing){return `images/renders_frame13/${tablierSize}/${style}/${group}/${color}.png`}
+function loadImage(path){
+ if(cache.has(path)){const existing=cache.get(path);cache.delete(path);cache.set(path,existing);return existing}
+ cache.set(path,new Promise((resolve,reject)=>{
+  const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>{cache.delete(path);reject(new Error(path))};image.src=path;
+ }));
+ return cache.get(path);
+}
+async function render(){
+ invalidateDetail();
+ const thisTicket=++ticket,style=housing,selection={...selected};stage.setAttribute('aria-busy','true');status.textContent='';
+ try{
+  const images=await Promise.all(groups.map(([group])=>loadImage(imagePath(group,selection[group],style))));
+  if(thisTicket!==ticket)return;
+  compositeContext.clearRect(0,0,1000,1000);
+  // Holdout masks partition visible surfaces. Add premultiplied coverage to avoid dark/bright hairline seams.
+  compositeContext.globalCompositeOperation='lighter';
+  for(const image of images)compositeContext.drawImage(image,0,0,1000,1000);
+  compositeContext.globalCompositeOperation='source-over';present();
+  // Bound decoded-image memory while retaining recent shape/color choices.
+  while(cache.size>8)cache.delete(cache.keys().next().value);
+  canvas.setAttribute('aria-label',`Metal shutter, tablier ${tablierSizes.find(row=>row[0]===tablierSize)[1]}, with ${style==='arrondi'?'rounded':'faceted'} housing. `+groups.map(([g,label])=>`${label}: ${colors.find(c=>c[0]===selection[g]).slice(1,3).join(' ')}`).join('. '));
+  stage.setAttribute('aria-busy','false');return true;
+ }catch(error){
+  if(thisTicket!==ticket)return;
+  stage.setAttribute('aria-busy','false');status.textContent='An image is missing. Extract the complete ZIP and keep the images folder beside index.html.';return false;
+ }
+}
+function refreshControls(){
+ for(const button of document.querySelectorAll("[data-tablier-size]"))button.setAttribute("aria-pressed",String(button.dataset.tablierSize===tablierSize));
+ for(const [group]of groups){const color=colors.find(c=>c[0]===selected[group]);labels.get(group).textContent=`${color[1]} · ${color[2]}`;
+  for(const button of rows.get(group).children)button.setAttribute('aria-pressed',String(button.dataset.color===selected[group]));
+ }
+ for(const button of document.querySelectorAll('[data-style]'))button.setAttribute('aria-pressed',String(button.dataset.style===housing));
+ document.getElementById('housingBadge').textContent=housing==='arrondi'?'Coffre arrondi':'Coffre facetté';
+}
+for(const [group,label]of groups){
+ const field=document.createElement('fieldset'),legend=document.createElement('legend'),choice=document.createElement('span'),row=document.createElement('div');
+ legend.append(document.createTextNode(label));choice.className='selection';legend.append(choice);labels.set(group,choice);
+ row.className='options';rows.set(group,row);
+ for(const [id,name,code,hex]of colors){
+  const button=document.createElement('button');button.type='button';button.className='color';button.dataset.color=id;button.setAttribute('aria-label',`${label}: ${name} ${code}`);
+  const swatch=document.createElement('span');swatch.className='swatch';swatch.style.backgroundColor=hex;
+  if(id==='gas-3100'){swatch.style.backgroundImage='radial-gradient(#ffffff44 .6px,transparent .8px)';swatch.style.backgroundSize='3px 3px'}
+  const nameLabel=document.createElement('span'),codeLabel=document.createElement('span');nameLabel.textContent=name;codeLabel.className='code';codeLabel.textContent=code;
+  button.append(swatch,nameLabel,codeLabel);button.onclick=()=>{selected[group]=id;refreshControls();render()};row.append(button);
+ }
+ field.append(legend,row);document.getElementById('controls').append(field);
+}
+for(const button of document.querySelectorAll('[data-style]'))button.onclick=()=>{housing=button.dataset.style;refreshControls();render()};
+document.getElementById('reset').onclick=()=>{for(const [group]of groups)selected[group]='acier-reference';refreshControls();render()};
+// Read-only state access lets a host page inspect choices without changing the compositing logic.
+window.shutterConfigurator={getState:()=>({housing,tablierSize,colors:{...selected},theme:document.documentElement.dataset.theme}),imagePath,setTheme};
+refreshControls();render();
+</script>
+<script src="recap-view.js"></script>
+<script src="measurement-flow.js"></script>
+<script src="rigat-host.js"></script>
+</body>
+</html>

@@ -8,5 +8,6 @@
 @import "../styles/rigat-mobile.css";
 @import "../styles/rigat-desktop-models.css";
 @import "../styles/rigat-configurator.css";
+@import "../styles/rigat-desktop-sections.css";
 @source "../components";
 @source "./";

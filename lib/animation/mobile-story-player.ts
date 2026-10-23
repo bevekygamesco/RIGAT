@@ -20,9 +20,15 @@ export function startMobileStory({canvas, section, stage, onChapter, onReady, on
   const decoded = new Map<number, HTMLImageElement>(), pending = new Set<number>(), retry = new Map<number, number>();
   let disposed=false, enhanced=false, warmed=false, active=0, frame=0, raf=0, drawFrame=-1;
   let lastImage: HTMLImageElement | undefined, animation: {from:number;to:number;start:number;duration:number;chapter:number}|null=null;
-  let previousY=scrollY, previousTop=0, until=0, wheelTotal=0, lastWheel=0, wheelGestureTaken=false;
+  let previousY=scrollY, previousTop=0, until=0, wheelTotal=0, wheelDirection=0, lastWheel=0, wheelTaken=false;
   let touch: {x:number;y:number;used:boolean}|null=null;
   let locked=false, lockedY=0, bypassUntil=0;
+  let pendingExit=0;
+  let exitTimer: ReturnType<typeof setTimeout> | undefined;
+  function clearSteps() {
+    pendingExit=0;wheelTotal=0;wheelDirection=0;lastWheel=0;wheelTaken=false;
+    clearTimeout(exitTimer);exitTimer=undefined;
+  }
   let savedBody: {position:string;top:string;left:string;right:string;width:string;overflow:string}|null=null;
   let savedRootOverflow="",savedBehavior="";
   function lockPage() {
@@ -38,6 +44,7 @@ export function startMobileStory({canvas, section, stage, onChapter, onReady, on
   }
   function unlockPage(bypass=false) {
     if(!locked)return;
+    clearSteps();
     locked=false;section.dataset.locked="false";
     const root=document.documentElement;
     if(savedBody)Object.assign(document.body.style,savedBody);
@@ -95,7 +102,7 @@ export function startMobileStory({canvas, section, stage, onChapter, onReady, on
     if(animation) {
       const p=clamp((now-animation.start)/animation.duration);
       frame=animation.from+(animation.to-animation.from)*ease(p);
-      if(p===1) {const index=animation.chapter; animation=null;finish(index);until=now+350;}
+      if(p===1) {const index=animation.chapter; animation=null;finish(index);until=now+350;scheduleExit();}
     }
     paint(); if(animation)wake();
   }
@@ -109,23 +116,41 @@ export function startMobileStory({canvas, section, stage, onChapter, onReady, on
   function warm() {if(!warmed){warmed=true;store.preloadAll();}}
   function align() {if(locked)return;window.scrollTo({top:Math.max(0,top()),behavior:"instant"});previousY=scrollY;}
   function enter(direction: number) {
-    section.dataset.started="true";
+    clearSteps();section.dataset.started="true";
     warm();lockPage();
     if(direction>0) {finish(0);play(0);} else {animation=null;frame=280;finish(5);wake();until=performance.now()+250;}
   }
   function canConsume(direction: number) {
     if(!atPin())return false;
     // Release at either boundary so visitors can leave the sequence in both directions.
-    if(!animation&&performance.now()>=until&&((direction>0&&active===5)||(direction<0&&active===0))) {
+    if(!animation&&((direction>0&&active===5)||(direction<0&&active===0))) {
       if(direction<0)section.dataset.started="false";
       unlockPage(true);return false;
     }
     return true;
   }
+  function scheduleExit() {
+    clearTimeout(exitTimer);exitTimer=undefined;
+    if(disposed||!locked||animation||!pendingExit)return;
+    const delay=Math.max(0,until-performance.now());
+    if(delay>0){exitTimer=setTimeout(scheduleExit,delay);return;}
+    const direction=pendingExit;
+    if(direction<0)section.dataset.started="false";
+    unlockPage(true);
+    window.scrollBy({top:direction*(direction>0?section.offsetHeight:innerHeight*.7),behavior:"instant"});
+  }
   function step(direction: number) {
-    if(animation||performance.now()<until)return;
-    if(direction>0&&active<5)play(active+1);
-    if(direction<0&&active>0)play(active-1);
+    if(!locked)return;
+    direction=Math.sign(direction);
+    pendingExit=0;clearTimeout(exitTimer);exitTimer=undefined;
+    if(animation) {
+      // Do not queue chapters. Only a separate outward gesture at an ending
+      // can request page release after the current segment has completed.
+      if((direction>0&&animation.chapter===5)||(direction<0&&animation.chapter===0))pendingExit=direction;
+      return;
+    }
+    const next=active+direction;
+    if(next>=0&&next<=5)play(next);
   }
   function skipTarget(target: EventTarget|null) {
     return target instanceof Element && !!target.closest("button,a,input,textarea,select,[contenteditable],dialog[open]");
@@ -135,18 +160,28 @@ export function startMobileStory({canvas, section, stage, onChapter, onReady, on
     const delta=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?innerHeight:1),dir=Math.sign(delta);
     if(!dir)return;
     if(!locked&&performance.now()>=bypassUntil&&scrollY<top()&&scrollY+delta>=top()) {
-      event.preventDefault();enter(1);lastWheel=performance.now();wheelGestureTaken=true;return;
+      event.preventDefault();enter(1);wheelTaken=true;lastWheel=performance.now();wheelDirection=dir;return;
     }
-    const now=performance.now(),idle=now-lastWheel;lastWheel=now;
-    if(idle>220){wheelTotal=0;wheelGestureTaken=false;}
-    if(wheelGestureTaken&&atPin()){event.preventDefault();return;}
-    if(!canConsume(dir))return;
+    const now=performance.now(),fresh=now-lastWheel>220||dir!==wheelDirection;
+    lastWheel=now;
+    if(fresh){wheelTaken=false;wheelTotal=0;}
+    // Strong continued wheel input may request another step once the current
+    // one has finished; a small trackpad momentum tail cannot auto-advance.
+    if(wheelTaken&&!animation&&now>=until&&Math.abs(delta)>=90){wheelTaken=false;wheelTotal=0;}
+    if(wheelTaken&&atPin()){event.preventDefault();return;}
+    const wasLocked=locked;
+    if(!canConsume(dir)) {
+      // The browser may discard a wheel's native scroll target while the body
+      // changes from fixed to normal. Apply that released movement explicitly.
+      if(wasLocked&&!locked){event.preventDefault();window.scrollBy({top:delta,behavior:"instant"});}
+      return;
+    }
     event.preventDefault();
-    // Momentum belongs to the same gesture, even if a trackpad keeps emitting events.
-    if(animation||now<until){wheelTotal=0;wheelGestureTaken=true;return;}
+    if(dir!==wheelDirection){wheelTotal=0;wheelDirection=dir;}
     wheelTotal+=delta;
-    if(Math.abs(wheelTotal)>=42){step(Math.sign(wheelTotal));wheelTotal=0;wheelGestureTaken=true;until=now+1700;}
+    if(Math.abs(wheelTotal)>=90){step(dir);wheelTotal=0;wheelTaken=true;}
   }
+
   function touchStart(event: TouchEvent) {
     if(event.touches.length!==1||skipTarget(event.target)){touch=null;return;}
     touch={x:event.touches[0].clientX,y:event.touches[0].clientY,used:false};
@@ -164,6 +199,7 @@ export function startMobileStory({canvas, section, stage, onChapter, onReady, on
     }
     event.preventDefault();
     if(Math.abs(dy)>40&&!touch.used){touch.used=true;step(dir);}
+
   }
   function touchEnd(){touch=null;}
   function keyboard(event: KeyboardEvent) {
@@ -208,7 +244,7 @@ export function startMobileStory({canvas, section, stage, onChapter, onReady, on
     previousTop=locked?lockedY:top();previousY=locked?lockedY:scrollY;previewEntrance();wake();
   }
   function select(index: number) {
-    index=Math.max(0,Math.min(5,index));section.dataset.started="true";warm();
+    clearSteps();index=Math.max(0,Math.min(5,index));section.dataset.started="true";warm();
     if(enhanced){lockPage();play(index);}else{frame=FRAMES[index];finish(index);wake();section.scrollIntoView({behavior:reduced.matches?"instant":"smooth"});}
   }
   const near=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))warm();},{rootMargin:"300px"});near.observe(section);
@@ -219,8 +255,8 @@ export function startMobileStory({canvas, section, stage, onChapter, onReady, on
   addEventListener("click",navigation,true);
   addEventListener("keydown",keyboard);reduced.addEventListener("change",resize);
   section.dataset.started="false";resize();request(0);
-  return {select,status:store.status,stop:()=>{animation=null;unlockPage(true);wake();},dispose:()=>{
-    unlockPage(true);
+  return {select,status:store.status,stop:()=>{clearSteps();animation=null;unlockPage(true);wake();},dispose:()=>{
+    clearSteps();unlockPage(true);
     disposed=true;cancelAnimationFrame(raf);observer.disconnect();near.disconnect();decoded.clear();
     removeEventListener("scroll",scroll);removeEventListener("resize",resize);removeEventListener("wheel",wheel);
     removeEventListener("touchstart",touchStart);removeEventListener("touchmove",touchMove);removeEventListener("touchend",touchEnd);removeEventListener("touchcancel",touchEnd);

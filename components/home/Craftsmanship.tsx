@@ -27,6 +27,7 @@ export function Craftsmanship() {
         </div>
         <MobileSectionImage
           src="/assets/mobile-models/plein.webp"
+          desktopSrc="/assets/rigat-product-960.webp"
           alt="Rideau métallique à lames pleines, avec coffre et coulisses"
           square
           className="m-craft-product"
